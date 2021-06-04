@@ -9,49 +9,8 @@
       @click:append-outer="addTask"
       @keyup.enter="addTask"
     ></v-text-field>
-
-    <v-list subheader flat>
-      <v-subheader>Active Tasks</v-subheader>
-
-      <v-list-item v-for="task in tasks" v-show="!task.finished" :key="task.id">
-        <template v-slot:default>
-          <v-list-item-action>
-            <v-checkbox
-              :input-value="task.finished"
-              color="primary"
-              @click="task.finished = !task.finished"
-            ></v-checkbox>
-          </v-list-item-action>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ task.title }}</v-list-item-title>
-          </v-list-item-content>
-        </template>
-      </v-list-item>
-
-      <v-subheader>Completed Tasks</v-subheader>
-
-      <v-list-item v-for="task in tasks" v-show="task.finished" :key="task.id">
-        <template v-slot:default>
-          <v-list-item-action>
-            <v-checkbox
-              :input-value="task.finished"
-              color="primary"
-              @click="task.finished = !task.finished"
-            ></v-checkbox>
-          </v-list-item-action>
-
-          <v-list-item-content class="text-decoration-line-through">
-            <v-list-item-title>{{ task.title }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn @click.stop="deleteTask(task.id)" icon>
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </template>
-      </v-list-item>
-    </v-list>
+    
+    <task-list :tasks='tasks' v-on:delete-task="deleteTask"> </task-list>
 
     <v-dialog v-model="dialog" persistent max-width="600px">
       <template v-slot:activator="{ on, attrs }">
@@ -104,7 +63,10 @@
 </template>
 
 <script>
+import TaskList from '@/components/Task-List.vue'
+
 export default {
+  components: { TaskList, },
   name: "Home",
   data() {
     return {
