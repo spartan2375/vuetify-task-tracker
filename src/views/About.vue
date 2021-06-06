@@ -48,34 +48,54 @@
       </v-dialog>
     </v-row>
 
-    <v-btn absolute class="mx-2" fab dark right color="primary">
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
+    <v-row>
+      <v-spacer></v-spacer>
+      <v-date-picker
+      :elevation="3"
+        v-model="date"
+        v-show="showDatePicker"
+        @input="showDatePicker = false">
+        <v-spacer></v-spacer>
+        <v-btn text color="primary" @click="showDatePicker = false">
+          Cancel
+        </v-btn>
+        </v-date-picker>
+      <v-btn
+        class="mx-10"
+        fab
+        dark
+        right
+        color="primary"
+        @click="showDatePicker = !showDatePicker"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-row>
   </div>
 </template>
 
 <script>
-import TaskList from '../components/Task-List.vue';
+import TaskList from "../components/Task-List.vue";
 export default {
   components: { TaskList },
   data() {
     return {
-
-  
-TaskList,    dialog: false
-    }
+      TaskList,
+      dialog: false,
+      showDatePicker: false,
+      date: "",
+    };
   },
 
   methods: {
     clickMe() {
-      console.log('Click Me')
-      this.dialog = false
+      console.log("Click Me");
+      this.dialog = false;
     },
 
-    include () {
-        return [document.querySelector('.included')]
-      },
-  }
-
+    include() {
+      return [document.querySelector(".included")];
+    },
+  },
 };
 </script>

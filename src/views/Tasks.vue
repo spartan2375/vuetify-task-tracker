@@ -9,8 +9,21 @@
       @click:append-outer="addTask"
       @keyup.enter="addTask"
     ></v-text-field>
-    
-    <task-list :tasks='tasks' v-on:delete-task="deleteTask"> </task-list>
+
+    <task-list
+      :tasks="tasks"
+      :is-active="false"
+      subtitle="Active Tasks"
+      v-on:edit-task="editTask"
+    >
+    </task-list>
+    <task-list
+      :tasks="tasks"
+      :is-active="true"
+      subtitle="Completed Tasks"
+      v-on:delete-task="deleteTask"
+    >
+    </task-list>
 
     <v-dialog v-model="dialog" persistent max-width="600px">
       <template v-slot:activator="{ on, attrs }">
@@ -59,49 +72,80 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      ref="dialog"
+      v-model="showPicker"
+      :return-value.sync="newDate"
+      persistent
+      width="290px"
+    >
+      <v-date-picker v-model="newDate" scrollable>
+        <v-spacer></v-spacer>
+        <v-btn text color="primary" @click="showPicker = false"> Cancel </v-btn>
+        <v-btn text color="primary" @click="updateTask"> OK </v-btn>
+      </v-date-picker>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import TaskList from '@/components/Task-List.vue'
+import TaskList from "@/components/Task-List.vue";
 
 export default {
-  components: { TaskList, },
+  components: { TaskList },
   name: "Home",
   data() {
     return {
       dialog: false,
+      showPicker: false,
       newTaskTitle: "",
+      newDate: "",
+      editingTaskId: 0,
       tasks: [
         {
           id: 1,
           title: "Eat soup",
           finished: false,
+          due: new Date().toISOString().substr(0, 10),
         },
 
         {
           id: 2,
           title: "Hit the vape",
           finished: false,
+          due: new Date().toISOString().substr(0, 10),
         },
 
         {
           id: 3,
           title: "Get back to work",
           finished: false,
+          due: new Date().toISOString().substr(0, 10),
         },
       ],
     };
   },
+  computed: {
+    sortByDue: function () {
+      this.tasks.sort((a, b) => {
+        if (a.due > b.due) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+    },
+  },
   methods: {
     addTask() {
       this.dialog = false;
-      console.log("add a task here");
       if (this.newTaskTitle != "") {
         let newTask = {
           id: Date.now(),
           title: this.newTaskTitle,
           finished: false,
+          due: new Date().toISOString().substr(0, 10),
         };
         this.tasks.push(newTask);
         this.newTaskTitle = "";
@@ -111,6 +155,24 @@ export default {
     deleteTask(id) {
       console.log("id: ", id);
       this.tasks = this.tasks.filter((task) => task.id !== id);
+    },
+
+    editTask(id) {
+      this.editingTaskId = id;
+      console.log("id: ", id);
+      this.showPicker = true;
+    },
+
+    updateTask() {
+      let currentTask = this.tasks.filter(
+        (task) => task.id === this.editingTaskId
+      );
+      this.tasks = this.tasks.filter((task) => task.id !== this.editingTaskId);
+      currentTask[0].due = this.newDate;
+      this.tasks.push(currentTask[0]);
+      // this.tasks[this.editingTaskId].due = this.newDate
+      this.showPicker = false;
+      this.sortByDue
     },
 
     clickMe() {
