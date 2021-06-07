@@ -56,6 +56,7 @@
                 <v-text-field
                   label="Task Title*"
                   v-model="newTaskTitle"
+                  autofocus
                   required
                   @keyup.enter="addTask"
                 ></v-text-field>
@@ -77,7 +78,6 @@
       ref="dialog"
       v-model="showPicker"
       :return-value.sync="newDate"
-      persistent
       width="290px"
     >
       <v-date-picker v-model="newDate" scrollable>
@@ -176,7 +176,6 @@ export default {
     },
 
     clickMe() {
-      console.log("Click Me");
       this.dialog = false;
       this.newTaskTitle = "";
     },
