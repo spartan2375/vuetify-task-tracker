@@ -126,7 +126,9 @@ export default {
       ],
     };
   },
-  computed: {
+
+  methods: {
+
     sortByDue: function () {
       this.tasks.sort((a, b) => {
         if (a.due > b.due) {
@@ -136,8 +138,7 @@ export default {
         }
       });
     },
-  },
-  methods: {
+
     addTask() {
       this.dialog = false;
       if (this.newTaskTitle != "") {
@@ -170,9 +171,8 @@ export default {
       this.tasks = this.tasks.filter((task) => task.id !== this.editingTaskId);
       currentTask[0].due = this.newDate;
       this.tasks.push(currentTask[0]);
-      // this.tasks[this.editingTaskId].due = this.newDate
       this.showPicker = false;
-      this.sortByDue
+      this.sortByDue()
     },
 
     clickMe() {
